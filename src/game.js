@@ -16,6 +16,8 @@ Game = (function() {
     var gameLogic = params.gameLogic;
     var models = [];
     this.loadProgram = require("./display/shaders");
+    this.loadModel = require("./display/models");
+
 
     this.debug = function(msg){
       if (doDebug) {
@@ -25,6 +27,7 @@ Game = (function() {
 
     this.start = function() {
       initGL(canvasID);
+      console.log(this);
       this.initGameLogic();
 
       this.debug('starting game');
