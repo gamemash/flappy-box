@@ -1,5 +1,6 @@
 Game = require('./game');
-flappybird = require("./flappybird");
 
-game = new Game({canvas: "game-canvas", debug: true, gameLogic: flappybird});
+mat4 = require('./lib/glmatrix');
+
+game = new Game({canvas: "game-canvas", debug: true});
 game.start();

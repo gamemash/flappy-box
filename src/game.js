@@ -15,8 +15,8 @@ Game = (function() {
     var doDebug = params.debug;
     var gameLogic = params.gameLogic;
     var models = [];
-    this.loadProgram = require("./display/shaders");
-    this.loadModel = require("./display/models");
+    this.loadProgram = require("./game/shaders");
+    this.loadModel = require("./game/models");
 
 
     this.debug = function(msg){
@@ -31,22 +31,38 @@ Game = (function() {
       this.initGameLogic();
 
       this.debug('starting game');
+      this.lastFrameTime = this.time();
+      this.lost = false;
       this.gameLoop();
     }
 
+    this.time = function(){
+      return (new Date()).getTime() / 1000;
+    }
+
     this.initGameLogic = function() {
-      models.push(require("./models/bird"))
+      models.push(require("./game/models/bird"))
 
       for (id in models) {
         models[id].setup(this);
       }
     }
 
+    this.lose = function () {
+      this.lost = true;
+      var audio = new Audio('lose.wav');
+      audio.play();
+    }
+
     this.gameLoop = function loop(){
+      this.dt = this.time() -  this.lastFrameTime;
       for (id in models) {
         models[id].draw(this);
       }
-      window.requestAnimationFrame(loop.bind(this));
+      if (this.lost == false){
+        window.requestAnimationFrame(loop.bind(this));
+      }
+      this.lastFrameTime = this.time();
     }
 
   };
