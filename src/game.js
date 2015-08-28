@@ -27,7 +27,6 @@ Game = (function() {
 
     this.start = function() {
       initGL(canvasID);
-      console.log(this);
       this.initGameLogic();
 
       this.debug('starting game');
@@ -41,7 +40,7 @@ Game = (function() {
     }
 
     this.initGameLogic = function() {
-      //models.push(require("./game/models/level"))
+      models.push(require("./game/level"))
       models.push(require("./game/models/bird"))
 
       for (id in models) {
