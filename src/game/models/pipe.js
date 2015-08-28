@@ -2,7 +2,9 @@ Pipe = (function() {
 
   var obj =  function(params){
     this.draw = function(game){
-      mat4.translate(this.modelMatrix, [this.level.speed() * game.dt, 0, 0]);
+      var posChange = this.level.speed() * game.dt;
+      this.position += posChange;
+      mat4.translate(this.modelMatrix, [posChange, 0, 0]);
       
       mat4.translate(this.modelMatrix, [0, -10 + this.holeHeight, 0]);
       this.pipe(game);
@@ -47,7 +49,8 @@ Pipe = (function() {
       this.modelMatrix = mat4.create();
       mat4.identity(this.modelMatrix);
       mat4.scale(this.modelMatrix, [0.2, 0.2, 0.0]);
-      mat4.translate(this.modelMatrix, [ 0.5 + params.xPos, 0.0, 0]);
+      this.position = params.xPos;
+      mat4.translate(this.modelMatrix, [ 0.5 + this.position, 0.0, 0]);
 
       gl.uniformMatrix4fv(program.modelMatrixUniform, false, this.modelMatrix);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);

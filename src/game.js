@@ -18,7 +18,6 @@ Game = (function() {
     this.loadProgram = require("./game/shaders");
     this.loadModel = require("./game/models");
 
-
     this.debug = function(msg){
       if (doDebug) {
         console.log(msg);
@@ -39,9 +38,16 @@ Game = (function() {
       return (new Date()).getTime() / 1000;
     }
 
+    this.score = function() {
+      return Math.round(this.level.totalElapsedTime / 10) * 10;
+    }
+
     this.initGameLogic = function() {
-      models.push(require("./game/level"))
-      models.push(require("./game/models/bird"))
+      this.level = require("./game/level");
+      models.push(this.level);
+
+      this.bird = require("./game/models/bird");
+      models.push(this.bird);
 
       for (id in models) {
         models[id].setup(this);
@@ -58,6 +64,7 @@ Game = (function() {
       this.lost = false;
       this.lastFrameTime = this.time();
       this.gameLoop();
+      this.level.setup(this);
     }
     
     this.clearScreen = function () {
@@ -67,6 +74,7 @@ Game = (function() {
     }
 
     this.gameLoop = function loop(){
+      document.getElementById("score").innerHTML = this.score();
       this.dt = this.time() -  this.lastFrameTime;
 
       this.clearScreen();
