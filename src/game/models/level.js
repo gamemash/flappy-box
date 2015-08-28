@@ -1,47 +1,7 @@
-addEventListener("keypress", function(event){
-  if (event.keyCode === 32) {
-    obj.onSpace();
-  };
-  if (event.keyCode === 114) {
-    obj.reset();
-  };
-});
-
 
 obj = {
-  position: [-2.5,0,0],
-  speed: [0,0,0],
-  onSpace: function() {
-    this.speed = [0,5.0,0]
-    var audio = new Audio('jump.wav');
-    audio.play();
-  },
-  reset: function() {
-    this.position = [-2.5,0,0];
-    this.speed = [0,0,0];
-    this.game.restart();
-  },
   draw: function draw(game){
     gl.useProgram(program);
-    this.game = game;
-
-    //mat4.translate(modelMatrix, [0.0, -0.01, 0]);
-    this.speed[1] -= 9.8 * game.dt;
-    this.position[1] += this.speed[1] * game.dt;
-    mat4.identity(modelMatrix);
-    mat4.scale(modelMatrix, [0.2, 0.2, 0.0]);
-    mat4.translate(modelMatrix, this.position);
-    mat4.translate(modelMatrix, [0.5, 0.5, 0.0]);
-    mat4.rotate(modelMatrix, this.speed[1] / 30, [0, 0, 1]);
-    mat4.translate(modelMatrix, [-0.5, -0.5, 0.0]);
-    
-    if (this.position[1] < -5.0) {
-      game.lose();
-    }
-
-    if (this.position[1] > 4.0) {
-      game.lose();
-    }
 
     gl.uniformMatrix4fv(program.modelMatrixUniform, false, modelMatrix);
 

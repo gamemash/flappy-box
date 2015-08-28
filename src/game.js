@@ -41,6 +41,7 @@ Game = (function() {
     }
 
     this.initGameLogic = function() {
+      //models.push(require("./game/models/level"))
       models.push(require("./game/models/bird"))
 
       for (id in models) {
@@ -50,15 +51,31 @@ Game = (function() {
 
     this.lose = function () {
       this.lost = true;
-      var audio = new Audio('lose.wav');
-      audio.play();
+      // var audio = new Audio('lose.wav');
+      // audio.play();
+    }
+
+    this.restart = function(){
+      this.lost = false;
+      this.lastFrameTime = this.time();
+      this.gameLoop();
+    }
+    
+    this.clearScreen = function () {
+      gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gl.clearColor(0.0, 0.0, 0.0, 1.0);
     }
 
     this.gameLoop = function loop(){
       this.dt = this.time() -  this.lastFrameTime;
+
+      this.clearScreen();
+
       for (id in models) {
         models[id].draw(this);
       }
+
       if (this.lost == false){
         window.requestAnimationFrame(loop.bind(this));
       }

@@ -99,6 +99,7 @@
 	    }
 
 	    this.initGameLogic = function() {
+	      //models.push(require("./game/models/level"))
 	      models.push(__webpack_require__(8))
 
 	      for (id in models) {
@@ -108,15 +109,31 @@
 
 	    this.lose = function () {
 	      this.lost = true;
-	      var audio = new Audio('lose.wav');
-	      audio.play();
+	      // var audio = new Audio('lose.wav');
+	      // audio.play();
+	    }
+
+	    this.restart = function(){
+	      this.lost = false;
+	      this.lastFrameTime = this.time();
+	      this.gameLoop();
+	    }
+	    
+	    this.clearScreen = function () {
+	      gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+	      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	      gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	    }
 
 	    this.gameLoop = function loop(){
 	      this.dt = this.time() -  this.lastFrameTime;
+
+	      this.clearScreen();
+
 	      for (id in models) {
 	        models[id].draw(this);
 	      }
+
 	      if (this.lost == false){
 	        window.requestAnimationFrame(loop.bind(this));
 	      }
@@ -235,6 +252,9 @@
 	  if (event.keyCode === 32) {
 	    obj.onSpace();
 	  };
+	  if (event.keyCode === 114) {
+	    obj.reset();
+	  };
 	});
 
 
@@ -246,10 +266,14 @@
 	    var audio = new Audio('jump.wav');
 	    audio.play();
 	  },
+	  reset: function() {
+	    this.position = [-2.5,0,0];
+	    this.speed = [0,0,0];
+	    this.game.restart();
+	  },
 	  draw: function draw(game){
-	    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-	    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+	    gl.useProgram(program);
+	    this.game = game;
 
 	    //mat4.translate(modelMatrix, [0.0, -0.01, 0]);
 	    this.speed[1] -= 9.8 * game.dt;
@@ -257,6 +281,9 @@
 	    mat4.identity(modelMatrix);
 	    mat4.scale(modelMatrix, [0.2, 0.2, 0.0]);
 	    mat4.translate(modelMatrix, this.position);
+	    mat4.translate(modelMatrix, [0.5, 0.5, 0.0]);
+	    mat4.rotate(modelMatrix, this.speed[1] / 30, [0, 0, 1]);
+	    mat4.translate(modelMatrix, [-0.5, -0.5, 0.0]);
 	    
 	    if (this.position[1] < -5.0) {
 	      game.lose();
